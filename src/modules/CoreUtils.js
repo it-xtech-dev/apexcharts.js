@@ -12,11 +12,14 @@ class CoreUtils {
     let comboCharts = false
     let comboChartsHasBars = false
     // if user specified a type in series too, turn on comboCharts flag
-    if (series.length && typeof series[0].type !== 'undefined') {
-      comboCharts = true
+    if (series.length) {
+      var prevChartType = series[0].type
       series.forEach((s) => {
-        if (s.type === 'bar' || s.type === 'column') {
-          comboChartsHasBars = true
+        if ((s.type || null) != (prevChartType || null)) {
+          comboCharts = true
+          if (s.type === 'bar' || s.type === 'column') {
+            comboChartsHasBars = true
+          }
         }
       })
     }

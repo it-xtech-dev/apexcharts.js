@@ -107,23 +107,14 @@ class Utils {
   }
 
   static clone(source) {
-    if (Object.prototype.toString.call(source) === '[object Array]') {
-      let cloneResult = []
-      for (let i = 0; i < source.length; i++) {
-        cloneResult[i] = this.clone(source[i])
+    const dateFormat = /[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T(2[0-3]|[01][0-9]):[0-5][0-9]/
+
+    return JSON.parse(JSON.stringify(source), (key, value) => {
+      if (typeof value === 'string' && dateFormat.test(value)) {
+        return new Date(value)
       }
-      return cloneResult
-    } else if (typeof source === 'object') {
-      let cloneResult = {}
-      for (let prop in source) {
-        if (source.hasOwnProperty(prop)) {
-          cloneResult[prop] = this.clone(source[prop])
-        }
-      }
-      return cloneResult
-    } else {
-      return source
-    }
+      return value
+    })
   }
 
   static log10(x) {

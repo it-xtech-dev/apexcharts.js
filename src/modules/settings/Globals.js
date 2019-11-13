@@ -194,9 +194,8 @@ export default class Globals {
     let globals = this.globalVars(config)
 
     globals.initialConfig = Utils.extend({}, config)
-    globals.initialSeries = JSON.parse(
-      JSON.stringify(globals.initialConfig.series)
-    )
+    globals.initialSeries = Utils.clone(globals.initialConfig.series) //JSON.parse(JSON.stringify(globals.initialConfig.series)) PK: Json.parse does not serializes dates properly
+
     globals.lastXAxis = JSON.parse(JSON.stringify(globals.initialConfig.xaxis))
     globals.lastYAxis = JSON.parse(JSON.stringify(globals.initialConfig.yaxis))
     return globals

@@ -4,3 +4,7 @@ issues/
 .DS_Store
 .idea
 .vscode
+dist/
+.gitignore
+package-lock.json
+package.json

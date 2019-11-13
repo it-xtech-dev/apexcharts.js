@@ -38,6 +38,7 @@ import './utils/ClassListPolyfill'
 import './utils/DetectElementResize'
 
 import en from './locales/en.json'
+import Spectrum from './charts/Spectrum'
 
 // global Apex object which user can use to override chart's defaults globally
 window.Apex = {}
@@ -265,6 +266,11 @@ export default class ApexCharts {
     // we need to generate yaxis for heatmap separately as we are not showing numerics there, but seriesNames. There are some tweaks which are required for heatmap to align labels correctly which are done in below function
     // Also we need to do this before calcuting Dimentions plotCoords() method of Dimensions
     this.formatters.heatmapLabelFormatters()
+
+    if (w.config.chart.type === 'spectrum') {
+      var chart = new Spectrum(this.ctx)
+      chart.initializeAxes()
+    }
 
     // We got plottable area here, next task would be to calculate axis areas
     this.dimensions.plotCoords()
@@ -518,7 +524,7 @@ export default class ApexCharts {
 
           // After forgetting lastAxes, we need to restore the new config in initialConfig/initialSeries
           w.globals.initialConfig = Utils.extend({}, w.config)
-          w.globals.initialSeries = JSON.parse(JSON.stringify(w.config.series))
+          w.globals.initialSeries = Utils.clone(w.config.series) //JSON.parse(JSON.stringify(w.config.series)) PK: Json.parse does not serializes dates properly
         }
       }
 

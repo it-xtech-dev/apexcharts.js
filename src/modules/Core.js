@@ -5,6 +5,7 @@ import CoreUtils from './CoreUtils'
 import Crosshairs from './Crosshairs'
 import DateTime from './../utils/DateTime'
 import HeatMap from '../charts/HeatMap'
+import Spectrum from '../charts/Spectrum'
 import Pie from '../charts/Pie'
 import Radar from '../charts/Radar'
 import Radial from '../charts/Radial'
@@ -58,7 +59,8 @@ export default class Core {
       'radar',
       'scatter',
       'bubble',
-      'heatmap'
+      'heatmap',
+      'spectrum'
     ]
 
     let xyChartsArrTypes = [
@@ -152,12 +154,14 @@ export default class Core {
 
     gl.series.map((series, st) => {
       // if user has specified a particular type for particular series
-      if (typeof ser[st].type !== 'undefined') {
+      if (
+        typeof ser[st].type !== 'undefined' &&
+        ser[st].type != w.config.chart.type
+      ) {
         if (ser[st].type === 'column' || ser[st].type === 'bar') {
           w.config.plotOptions.bar.horizontal = false // horizontal bars not supported in mixed charts, hence forcefully set to false
           columnSeries.series.push(series)
           columnSeries.i.push(st)
-          w.globals.columnSeries = columnSeries.series
         } else if (ser[st].type === 'area') {
           areaSeries.series.push(series)
           areaSeries.i.push(st)
@@ -266,6 +270,9 @@ export default class Core {
         case 'radar':
           elGraph = radar.draw(gl.series)
           break
+        case 'spectrum':
+          let spectrum = new Spectrum(this.ctx, xyRatios)
+          elGraph = spectrum.draw(gl.series)
         default:
           elGraph = line.draw(gl.series)
       }
@@ -386,7 +393,7 @@ export default class Core {
       if (radialElDataLabels) {
         let elRadialDataLalelsRect = Utils.getBoundingClientRect(
           radialElDataLabels
-        )
+    )
 
         let maxHeight =
           Math.max(elRadialRect.bottom, elRadialDataLalelsRect.bottom) -
@@ -396,7 +403,6 @@ export default class Core {
         chartInnerDimensions = Math.max(w.globals.radialSize * 2, maxHeight)
       }
     }
-
     const newHeight = chartInnerDimensions + gl.translateY + legendHeight + offY
 
     if (gl.dom.elLegendForeign) {
