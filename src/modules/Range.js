@@ -172,10 +172,13 @@ class Range {
         }
 
         gl.minY = lowestYInAllSeries - (diff * 5) / 100
-        // if (lowestYInAllSeries > 0 && gl.minY < 0) {
+
         /* fix https://github.com/apexcharts/apexcharts.js/issues/614 */
-        //  gl.minY = 0
-        // }
+        /* fix https://github.com/apexcharts/apexcharts.js/issues/968 */
+        if (lowestYInAllSeries > 0 && gl.minY < 0) {
+          gl.minY = 0
+        }
+
         /* fix https://github.com/apexcharts/apexcharts.js/issues/426 */
         gl.maxY = gl.maxY + (diff * 5) / 100
       }
@@ -389,11 +392,13 @@ class Range {
           )
         }
 
-        sX.sort((a, b) => {
+        // fix #983 (clone the array to avoid side effects)
+        const seriesX = sX.slice()
+        seriesX.sort((a, b) => {
           return a - b
         })
 
-        sX.forEach((s, j) => {
+        seriesX.forEach((s, j) => {
           if (j > 0) {
             let xDiff = s - gl.seriesX[i][j - 1]
             gl.minXDiff = Math.min(xDiff, gl.minXDiff)

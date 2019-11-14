@@ -183,10 +183,10 @@ export default class Position {
     const tooltipEl = ttCtx.getElTooltip()
     let tooltipRect = ttCtx.tooltipRect
 
-    let pointR = r !== null ? parseInt(r) : 1
+    let pointR = r !== null ? parseFloat(r) : 1
 
-    let x = parseInt(cx) + pointR + 5
-    let y = parseInt(cy) + pointR / 2 // - tooltipRect.ttHeight / 2
+    let x = parseFloat(cx) + pointR + 5
+    let y = parseFloat(cy) + pointR / 2 // - tooltipRect.ttHeight / 2
 
     if (x > w.globals.gridWidth / 2) {
       x = x - tooltipRect.ttWidth - pointR - 15
@@ -278,7 +278,8 @@ export default class Position {
 
     if (
       w.config.series[capturedSeries].type &&
-      w.config.series[capturedSeries].type === 'column'
+      (w.config.series[capturedSeries].type === 'column' ||
+        w.config.series[capturedSeries].type === 'candlestick')
     ) {
       // fix error mentioned in #811
       return

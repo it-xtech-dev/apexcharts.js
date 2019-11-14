@@ -193,7 +193,6 @@ class Pie {
     this.strokeWidth = w.config.stroke.show ? w.config.stroke.width : 0
 
     for (let i = 0; i < sectorAngleArr.length; i++) {
-      // if(sectorAngleArr[i]>0) {
 
       let elPieArc = graphics.group({
         class: `apexcharts-series apexcharts-pie-series`,
@@ -314,8 +313,8 @@ class Pie {
           dur
         })
       }
-
       // animation code ends
+
       if (w.config.plotOptions.pie.expandOnClick) {
         elPath.click(this.pieClicked.bind(this, i))
       }
@@ -368,7 +367,6 @@ class Pie {
           this.sliceLabels.push(elPieLabel)
         }
       }
-      // }
     }
 
     return g
@@ -481,7 +479,7 @@ class Pie {
           }
 
           if (opts.i === w.config.series.length - 1) {
-            animations.animationCompleted()
+            animations.animationCompleted(el)
           }
         })
         .during(function(pos) {
@@ -531,7 +529,7 @@ class Pie {
     let me = this
     let path
 
-    let size = me.w.globals.radialSize + 4
+    let size = me.w.globals.radialSize + (w.config.plotOptions.pie.expandOnClick ? 4 : 0)
     let elPath = w.globals.dom.Paper.select(
       `.apexcharts-${w.config.chart.type.toLowerCase()}-slice-${i}`
     ).members[0]
@@ -731,7 +729,7 @@ class Pie {
     if (dataLabelsConfig.name.show) {
       let elLabel = graphics.drawText({
         x: x,
-        y: y + parseInt(dataLabelsConfig.name.offsetY),
+        y: y + parseFloat(dataLabelsConfig.name.offsetY),
         text: name,
         textAnchor: 'middle',
         foreColor: labelColor,
@@ -744,7 +742,7 @@ class Pie {
 
     if (dataLabelsConfig.value.show) {
       let valOffset = dataLabelsConfig.name.show
-        ? parseInt(dataLabelsConfig.value.offsetY) + 16
+        ? parseFloat(dataLabelsConfig.value.offsetY) + 16
         : dataLabelsConfig.value.offsetY
 
       let elValue = graphics.drawText({

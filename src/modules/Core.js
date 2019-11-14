@@ -225,13 +225,12 @@ export default class Core {
           scatterLine.draw(scatterSeries.series, 'scatter', scatterSeries.i)
         )
       }
-      // TODO: allow bubble series in a combo chart
-      // if (bubbleSeries.series.length > 0) {
-      //   const bubbleLine = new Line(this.ctx, xyRatios, true)
-      //   elGraph.push(
-      //     bubbleLine.draw(bubbleSeries.series, 'bubble', bubbleSeries.i)
-      //   )
-      // }
+      if (bubbleSeries.series.length > 0) {
+        const bubbleLine = new Line(this.ctx, xyRatios, true)
+        elGraph.push(
+          bubbleLine.draw(bubbleSeries.series, 'bubble', bubbleSeries.i)
+        )
+      }
     } else {
       switch (cnf.chart.type) {
         case 'line':
@@ -558,7 +557,11 @@ export default class Core {
           Array.isArray(ser[i].data[j][1]) &&
           ser[i].data[j][1].length === 4
         ) {
+          // candlestick nested ohlc format
           this.twoDSeries.push(Utils.parseNumber(ser[i].data[j][1][3]))
+        } else if (ser[i].data[j].length === 5) {
+          // candlestick non-nested ohlc format
+          this.twoDSeries.push(Utils.parseNumber(ser[i].data[j][4]))
         } else {
           this.twoDSeries.push(Utils.parseNumber(ser[i].data[j][1]))
         }
@@ -676,10 +679,10 @@ export default class Core {
       ohlc = this.handleCandleStickDataFormat('xy', ser, i)
     }
 
-    gl.seriesCandleO.push(ohlc.o)
-    gl.seriesCandleH.push(ohlc.h)
-    gl.seriesCandleL.push(ohlc.l)
-    gl.seriesCandleC.push(ohlc.c)
+    gl.seriesCandleO[i] = ohlc.o
+    gl.seriesCandleH[i] = ohlc.h
+    gl.seriesCandleL[i] = ohlc.l
+    gl.seriesCandleC[i] = ohlc.c
 
     return ohlc
   }
@@ -727,14 +730,27 @@ export default class Core {
       'Please provide [Open, High, Low and Close] values in valid format. Read more https://apexcharts.com/docs/series/#candlestick'
 
     if (format === 'array') {
-      if (ser[i].data[0][1].length !== 4) {
+      if (
+        (!Array.isArray(ser[i].data[0][1]) && ser[i].data[0].length !== 5) ||
+        (Array.isArray(ser[i].data[0][1]) && ser[i].data[0][1].length !== 4)
+      ) {
         throw new Error(err)
       }
-      for (let j = 0; j < ser[i].data.length; j++) {
-        serO.push(ser[i].data[j][1][0])
-        serH.push(ser[i].data[j][1][1])
-        serL.push(ser[i].data[j][1][2])
-        serC.push(ser[i].data[j][1][3])
+
+      if (ser[i].data[0].length === 5) {
+        for (let j = 0; j < ser[i].data.length; j++) {
+          serO.push(ser[i].data[j][1])
+          serH.push(ser[i].data[j][2])
+          serL.push(ser[i].data[j][3])
+          serC.push(ser[i].data[j][4])
+        }
+      } else {
+        for (let j = 0; j < ser[i].data.length; j++) {
+          serO.push(ser[i].data[j][1][0])
+          serH.push(ser[i].data[j][1][1])
+          serL.push(ser[i].data[j][1][2])
+          serC.push(ser[i].data[j][1][3])
+        }
       }
     } else if (format === 'xy') {
       if (ser[i].data[0].y.length !== 4) {

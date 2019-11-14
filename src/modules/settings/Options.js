@@ -327,11 +327,16 @@ export default class Options {
             backgroundBarOpacity: 1
           },
           dataLabels: {
+            position: 'top', // top, center, bottom
             maxItems: 100,
             hideOverflowingLabels: true,
-            position: 'top' // top, center, bottom
+            orientation: 'horizontal'
             // TODO: provide stackedLabels for stacked charts which gives additions of values
           }
+        },
+        bubble: {
+          minBubbleRadius: undefined,
+          maxBubbleRadius: undefined
         },
         candlestick: {
           colors: {
