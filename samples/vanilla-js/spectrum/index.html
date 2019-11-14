@@ -220,7 +220,6 @@
 
             var options = {
                 chart: {
-                    height: 600,
                     type: 'spectrum',
                     animations: {
                         enabled: false
@@ -247,7 +246,8 @@
 
             console.log(options);
 
-            options.chart.height = 600
+            options.chart.width = "100%";
+            options.chart.height = "100%";
 
             var chart = new ApexCharts(
                 document.getElementById("chart"),
