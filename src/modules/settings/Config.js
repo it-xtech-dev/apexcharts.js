@@ -23,7 +23,7 @@ export default class Config {
     if (this.chartType === 'histogram') {
       // technically, a histogram can be drawn by a column chart with no spaces in between
       opts.chart.type = 'bar'
-      opts = Utils.extend(
+      opts = Utils.mergeDeep(
         {
           plotOptions: {
             bar: {
@@ -119,17 +119,20 @@ export default class Config {
       ) {
         chartDefaults = defaults.sparkline(chartDefaults)
       }
-      newDefaults = Utils.extend(config, chartDefaults)
+      newDefaults = Utils.mergeDeep(config, chartDefaults)
     }
 
     // config should cascade in this fashion
     // default-config < global-apex-variable-config < user-defined-config
 
     // get GLOBALLY defined options and merge with the default config
-    let mergedWithDefaultConfig = Utils.extend(newDefaults, window.Apex)
+    let mergedWithDefaultConfig = Utils.mergeDeep(newDefaults, window.Apex)
 
     // get the merged config and extend with user defined config
-    config = Utils.extend(mergedWithDefaultConfig, opts)
+    config = Utils.mergeDeep(
+      mergedWithDefaultConfig,
+      CoreUtils.normalizeOptions(opts)
+    )
 
     // some features are not supported. those mismatches should be handled
     config = this.handleUserInputErrors(config)
@@ -149,14 +152,14 @@ export default class Config {
       window.Apex.yaxis &&
       window.Apex.yaxis.constructor !== Array
     ) {
-      opts.yaxis = Utils.extend(opts.yaxis, window.Apex.yaxis)
+      opts.yaxis = Utils.mergeDeep(opts.yaxis, window.Apex.yaxis)
     }
 
     // as we can't extend nested object's array with extend, we need to do it first
     // user can provide either an array or object in yaxis config
     if (opts.yaxis.constructor !== Array) {
       // convert the yaxis to array if user supplied object
-      opts.yaxis = [Utils.extend(options.yAxis, opts.yaxis)]
+      opts.yaxis = [Utils.mergeDeep(options.yAxis, opts.yaxis)]
     } else {
       opts.yaxis = Utils.extendArray(opts.yaxis, options.yAxis)
     }

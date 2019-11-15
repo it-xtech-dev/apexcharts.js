@@ -197,8 +197,8 @@ class Intersect {
         (w.globals.isBarHorizontal && ttCtx.hasBars()))
     ) {
       const isReversed = w.globals.isMultipleYAxis
-      ? w.config.yaxis[seriesIndex] && w.config.yaxis[seriesIndex].reversed
-      : w.config.yaxis[0].reversed
+        ? w.config.yaxis[seriesIndex] && w.config.yaxis[seriesIndex].reversed
+        : w.config.yaxis[0].reversed
 
       if (isReversed) {
         x = w.globals.gridWidth - x

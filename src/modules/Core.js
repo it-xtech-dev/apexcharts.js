@@ -295,13 +295,7 @@ export default class Core {
       .pop()
 
     if (widthUnit === '%') {
-      if (Utils.isNumber(elDim[0])) {
-        if (elDim[0].width === 0) {
-          elDim = Utils.getDimensions(this.el.parentNode)
-        }
-
-        gl.svgWidth = (elDim[0] * parseInt(cnf.chart.width)) / 100
-      }
+      gl.svgWidth = (elDim.width * parseInt(cnf.chart.width)) / 100
     } else if (widthUnit === 'px' || widthUnit === '') {
       gl.svgWidth = parseInt(cnf.chart.width)
     }
@@ -312,8 +306,8 @@ export default class Core {
         .split(/[0-9]+/g)
         .pop()
       if (heightUnit === '%') {
-        let elParentDim = Utils.getDimensions(this.el.parentNode)
-        gl.svgHeight = (elParentDim[1] * parseInt(cnf.chart.height)) / 100
+        // % chart dimensions simplified (now there are not taken from parent but directly from the container)
+        gl.svgHeight = (elDim.height * parseInt(cnf.chart.height)) / 100
       } else {
         gl.svgHeight = parseInt(cnf.chart.height)
       }
@@ -340,8 +334,9 @@ export default class Core {
       ? cnf.chart.parentHeightOffset
       : 0
 
-    gl.dom.Paper.node.parentNode.parentNode.style.minHeight =
-      gl.svgHeight + offsetY + 'px'
+    // minHeight for container removed;
+    // gl.dom.Paper.node.parentNode.parentNode.style.minHeight =
+    //   gl.svgHeight + offsetY + 'px'
 
     gl.dom.elWrap.style.width = gl.svgWidth + 'px'
     gl.dom.elWrap.style.height = gl.svgHeight + 'px'
@@ -392,7 +387,7 @@ export default class Core {
       if (radialElDataLabels) {
         let elRadialDataLalelsRect = Utils.getBoundingClientRect(
           radialElDataLabels
-    )
+        )
 
         let maxHeight =
           Math.max(elRadialRect.bottom, elRadialDataLalelsRect.bottom) -

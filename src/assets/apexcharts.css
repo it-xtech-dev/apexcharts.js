@@ -2,6 +2,12 @@
   position: relative;
   user-select: none;
   /* cannot give overflow: hidden as it will crop tooltips which overflow outside chart area */
+  opacity: 1;
+  transition: opacity 0.3s ease-in;
+}
+.resizing > .apexcharts-canvas {
+  opacity: 0.3;
+  transition: none;
 }
 
 /* scrollbar is not visible by default for legend, hence forcing the visibility */

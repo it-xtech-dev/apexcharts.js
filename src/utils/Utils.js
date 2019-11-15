@@ -1,3 +1,29 @@
+// Object assign polyfill
+if (typeof Object.assign !== 'function') {
+  ;(function() {
+    Object.assign = function(target) {
+      'use strict'
+      // We must check against these specific cases.
+      if (target === undefined || target === null) {
+        throw new TypeError('Cannot convert undefined or null to object')
+      }
+
+      let output = Object(target)
+      for (let index = 1; index < arguments.length; index++) {
+        let source = arguments[index]
+        if (source !== undefined && source !== null) {
+          for (let nextKey in source) {
+            if (source.hasOwnProperty(nextKey)) {
+              output[nextKey] = source[nextKey]
+            }
+          }
+        }
+      }
+      return output
+    }
+  })()
+}
+
 /*
  ** Generic functions which are not dependent on ApexCharts
  */
@@ -24,59 +50,10 @@ class Utils {
     return array
   }
 
-  // to extend defaults with user options
-  // credit: http://stackoverflow.com/questions/27936772/deep-object-merging-in-es6-es7#answer-34749873
-  static extend(target, source) {
-    if (typeof Object.assign !== 'function') {
-      ;(function() {
-        Object.assign = function(target) {
-          'use strict'
-          // We must check against these specific cases.
-          if (target === undefined || target === null) {
-            throw new TypeError('Cannot convert undefined or null to object')
-          }
-
-          let output = Object(target)
-          for (let index = 1; index < arguments.length; index++) {
-            let source = arguments[index]
-            if (source !== undefined && source !== null) {
-              for (let nextKey in source) {
-                if (source.hasOwnProperty(nextKey)) {
-                  output[nextKey] = source[nextKey]
-                }
-              }
-            }
-          }
-          return output
-        }
-      })()
-    }
-
-    let output = Object.assign({}, target)
-    if (this.isObject(target) && this.isObject(source)) {
-      Object.keys(source).forEach((key) => {
-        if (this.isObject(source[key])) {
-          if (!(key in target)) {
-            Object.assign(output, {
-              [key]: source[key]
-            })
-          } else {
-            output[key] = this.extend(target[key], source[key])
-          }
-        } else {
-          Object.assign(output, {
-            [key]: source[key]
-          })
-        }
-      })
-    }
-    return output
-  }
-
   static extendArray(arrToExtend, resultArr) {
     let extendedArr = []
     arrToExtend.map((item) => {
-      extendedArr.push(Utils.extend(resultArr, item))
+      extendedArr.push(Utils.mergeDeep(resultArr, item))
     })
     arrToExtend = extendedArr
     return arrToExtend
@@ -106,15 +83,64 @@ class Utils {
     return obj
   }
 
-  static clone(source) {
-    const dateFormat = /[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T(2[0-3]|[01][0-9]):[0-5][0-9]/
+  /**
+   * Performs a deep merge of `source` into `target`.
+   * Mutates `target` only. Matches array elements by its index.
+   *
+   * @author inspired by [jhildenbiddle](https://stackoverflow.com/a/48218209).
+   */
+  static mergeDeep(target, source) {
+    const isObject = (obj) => obj && typeof obj === 'object'
 
-    return JSON.parse(JSON.stringify(source), (key, value) => {
-      if (typeof value === 'string' && dateFormat.test(value)) {
-        return new Date(value)
+    if (!isObject(target) || !isObject(source)) {
+      return source
+    }
+
+    Object.keys(source).forEach((key) => {
+      var targetValue = target[key]
+      const sourceValue = source[key]
+
+      if (Array.isArray(sourceValue)) {
+        target[key] = target[key] || []
+        targetValue = target[key]
+        // when source is an array merge array elements one by one matched by index
+        target[key] = sourceValue.map((val, index) => {
+          if (!targetValue[index]) {
+            if (Array.isArray(val)) {
+              targetValue[index] = []
+            } else if (isObject(val)) {
+              targetValue[index] = {}
+            }
+          }
+          return this.mergeDeep(this.clone(targetValue[index]), val)
+        })
+      } else if (isObject(sourceValue)) {
+        target[key] = this.mergeDeep(this.clone(targetValue), sourceValue)
+      } else {
+        // assume this is "non complex" value
+        target[key] = sourceValue
       }
-      return value
     })
+
+    return target
+  }
+
+  static clone(source) {
+    var target = {}
+    if (Array.isArray(source)) {
+      target = []
+    }
+    return this.mergeDeep(target, source)
+    // if (source == null) return null
+    // if (source == undefined) return undefined
+    // const dateFormat = /[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T(2[0-3]|[01][0-9]):[0-5][0-9]/
+
+    // return JSON.parse(JSON.stringify(source), (key, value) => {
+    //   if (typeof value === 'string' && dateFormat.test(value)) {
+    //     return new Date(value)
+    //   }
+    //   return value
+    // })
   }
 
   static log10(x) {
@@ -159,7 +185,6 @@ class Utils {
 
   static getDimensions(el) {
     let computedStyle = getComputedStyle(el)
-    let ret = []
 
     let elementHeight = el.clientHeight
     let elementWidth = el.clientWidth
@@ -170,10 +195,8 @@ class Utils {
     elementWidth -=
       parseFloat(computedStyle.paddingLeft) +
       parseFloat(computedStyle.paddingRight)
-    ret.push(elementWidth)
-    ret.push(elementHeight)
 
-    return ret
+    return { width: elementWidth, height: elementHeight }
   }
 
   static getBoundingClientRect(element) {

@@ -203,14 +203,16 @@ export default class ApexCharts {
     gl.noData = false
     gl.animationEnded = false
 
-    this.responsive.checkResponsiveConfig(opts)
-
     if (this.el === null) {
       gl.animationEnded = true
       return null
     }
 
     this.core.setupElements()
+
+    // PK: Responsive bahaviour modified!
+    // Responsive options will be applied in relation to chart container - not screen size.
+    this.responsive.applyResponsiveConfig(opts)
 
     if (gl.svgWidth === 0) {
       // if the element is hidden, skip drawing
@@ -515,11 +517,11 @@ export default class ApexCharts {
         ch.config = new Config(options)
         options = CoreUtils.extendArrayProps(ch.config, options)
 
-        w.config = Utils.extend(w.config, options)
+        w.config = Utils.mergeDeep(w.config, options)
 
         if (overwriteInitialConfig) {
           // restore the new config in initialConfig/initialSeries
-          w.globals.initialConfig = Utils.extend({}, w.config)
+          w.globals.initialConfig = Utils.mergeDeep({}, w.config)
           w.globals.initialSeries = Utils.clone(w.config.series) //JSON.parse(JSON.stringify(w.config.series)) PK: Json.parse does not serializes dates properly
         }
       }
@@ -901,10 +903,6 @@ export default class ApexCharts {
     }
   }
 
-  static merge(target, source) {
-    return Utils.extend(target, source)
-  }
-
   toggleSeries(seriesName) {
     let isSeriesHidden = this.series.isSeriesHidden(seriesName)
 
@@ -1117,7 +1115,7 @@ export default class ApexCharts {
 
     if (selectedLocale) {
       // create a complete locale object by extending defaults so you don't get undefined errors.
-      let ret = Utils.extend(en, selectedLocale)
+      let ret = Utils.mergeDeep(en, selectedLocale)
 
       // store these locale options in global var for ease access
       this.w.globals.locale = ret.options
@@ -1154,6 +1152,8 @@ export default class ApexCharts {
    * Handle window resize and re-draw the whole chart.
    */
   windowResize() {
+    this.el.classList.add('resizing')
+    resizing
     clearTimeout(this.w.globals.resizeTimer)
     this.w.globals.resizeTimer = window.setTimeout(() => {
       this.w.globals.resized = true
@@ -1161,6 +1161,7 @@ export default class ApexCharts {
 
       // we need to redraw the whole chart on window resize (with a small delay).
       this.update()
+      this.el.classList.remove('resizing')
     }, 150)
   }
 }

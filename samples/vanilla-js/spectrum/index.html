@@ -1,11 +1,37 @@
 <html>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">    
     <head>
         <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
         <script src="../../../dist/apexcharts.js"></script>
+
+        <style>
+            html {
+                height: 100%;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100%;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            #chart {
+                width: 80%;
+                height: 80%;
+                /* background-color: blue; */
+                overflow: visible;
+            }
+        </style>
     </head>
     <body>
         <div id="chart"></div>
-        <div id="chart1"></div>
         <script>
           /** ********************************************** **
             @Author			Paweł Kołodziej
@@ -223,12 +249,12 @@
                     type: 'spectrum',
                     animations: {
                         enabled: false
-                    }
+                    },                   
                 },
                 series: series,
                 title: {
                     text: 'Spectrum chart example'
-                }
+                },
                 // xaxis: {
                 //     tickAmount: 59,
                 //     type: 'numeric',
@@ -242,10 +268,41 @@
                 // yaxis: {
                 //     reversed: true
                 // }
+                responsive: [
+                    {
+                        maxWidth: 800,
+                        options: {
+                            legend: {
+                                position: "left"
+                            }
+                        }                        
+                    },
+                    {
+                        maxWidth: 600,
+                        options: {
+                            legend: {
+                                position: "right"
+                            }
+                        }
+                    },   
+                    {
+                        maxWidth: 425,
+                        options: {
+                            legend: {
+                                position: "bottom"
+                            },
+                            yaxis: {
+                                labels: {
+                                    show: false
+                                }
+                            }
+                        }
+                    }
+                ]                 
             }
 
             console.log(options);
-
+            options.chart.parentHeightOffset = 0;
             options.chart.width = "100%";
             options.chart.height = "100%";
 
@@ -255,132 +312,6 @@
             )
 
             chart.render();
-
-
-
-// function generateData1(count, yrange) {
-//   var i = 0;
-//   var series = [];
-//   while (i < count) {
-//     var x = (i + 1).toString();
-//     var y =
-//       Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
-
-//     series.push({
-//       x: x,
-//       y: y
-//     });
-//     i++;
-//   }
-//   return series;
-// }
-
-// var options1 = {
-//   chart: {
-//     height: 350,
-//     type: "heatmap"
-//   },
-//   colors: [
-//     "orange",
-//     "orange",
-//     "orange",
-//     "orange",
-//     "white",
-//     "pink",
-//     "pink",
-//     "pink",
-//     "pink"
-//   ],
-//   plotOptions: {
-//     heatmap: {
-//       shadeIntensity: 1
-//     }
-//   },
-//   dataLabels: {
-//     enabled: false
-//   },
-//   series: [
-//     {
-//       name: "Jaffdfdfdfdn",
-//       data: generateData1(20, {
-//         min: -30,
-//         max: 55
-//       })
-//     },
-//     {
-//       name: "Feb",
-//       data: generateData1(20, {
-//         min: -30,
-//         max: 55
-//       })
-//     },
-//     {
-//       name: "Mar",
-//       data: generateData1(20, {
-//         min: -30,
-//         max: 55
-//       })
-//     },
-//     {
-//       name: "Apr",
-//       data: generateData1(20, {
-//         min: -30,
-//         max: 55
-//       })
-//     },
-//     {
-//       name: "",
-//       data: generateData1(20, {
-//         min: 0,
-//         max: 0
-//       })
-//     },
-//     {
-//       name: "May",
-//       data: generateData1(20, {
-//         min: -30,
-//         max: 55
-//       })
-//     },
-//     {
-//       name: "Jun",
-//       data: generateData1(20, {
-//         min: -30,
-//         max: 55
-//       })
-//     },
-//     {
-//       name: "Jul",
-//       data: generateData1(20, {
-//         min: -30,
-//         max: 55
-//       })
-//     },
-//     {
-//       name: "Aug",
-//       data: generateData1(20, {
-//         min: -30,
-//         max: 55
-//       })
-//     }
-//   ],
-//   tooltip: {
-//     custom: function({ series, seriesIndex, dataPointIndex, w }) {
-//       if (w.globals.seriesNames[seriesIndex] !== "") {
-//         return series[seriesIndex][dataPointIndex];
-//       } else {
-//         return "";
-//       }
-//     }
-//   }
-// };
-
-// var chart1 = new ApexCharts(document.querySelector("#chart1"), options1);
-
-// chart1.render();
-
-
-
 
         </script>
     </body>

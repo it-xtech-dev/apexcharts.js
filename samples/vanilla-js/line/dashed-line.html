@@ -29,10 +29,7 @@
     var options = {
       chart: {
         height: 350,
-        type: 'line',
-        zoom: {
-          enabled: false
-        },
+        type: 'line'
       },
       dataLabels: {
         enabled: false
@@ -55,10 +52,6 @@
           data: [87, 57, 74, 99, 75, 38, 62, 47, 82, 56, 45, 47]
         }
       ],
-      title: {
-        text: 'Page Statistics',
-        align: 'left'
-      },
       legend: {
         tooltipHoverFormatter: function(val, opts) {
           return val + ' - <strong>' + opts.w.globals.series[opts.seriesIndex][opts.dataPointIndex] + '</strong>'
@@ -99,7 +92,33 @@
       },
       grid: {
         borderColor: '#f1f1f1',
-      }
+      },
+      responsive: [
+        {
+            maxWidth: 800,
+            options: {
+                legend: {
+                    position: "left"
+                }
+            }
+        },
+        {
+            maxWidth: 600,
+            options: {
+                legend: {
+                    position: "right"
+                }
+            }
+        },   
+        {
+            maxWidth: 425,
+            options: {
+                legend: {
+                    position: "bottom"
+                }
+            }
+        }
+      ]       
     }
 
     var chart = new ApexCharts(

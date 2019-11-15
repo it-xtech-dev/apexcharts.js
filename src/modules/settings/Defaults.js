@@ -81,7 +81,7 @@ export default class Defaults {
       }
     }
 
-    return Utils.extend(defaults, ret)
+    return Utils.mergeDeep(defaults, ret)
   }
 
   bar() {
@@ -338,7 +338,7 @@ export default class Defaults {
       }
     }
 
-    return Utils.extend(defaults, ret)
+    return Utils.mergeDeep(defaults, ret)
   }
 
   stacked100() {
@@ -590,7 +590,9 @@ export default class Defaults {
   }
 
   radar() {
-    this.opts.yaxis[0].labels.offsetY = this.opts.yaxis[0].labels.offsetY ? this.opts.yaxis[0].labels.offsetY : 6
+    this.opts.yaxis[0].labels.offsetY = this.opts.yaxis[0].labels.offsetY
+      ? this.opts.yaxis[0].labels.offsetY
+      : 6
 
     return {
       dataLabels: {

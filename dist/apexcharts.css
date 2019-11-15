@@ -19,6 +19,9 @@
   background: #343F57;
 }
 
+.apexcharts-canvas canvas {
+  position: absolute;
+}
 .apexcharts-inner {
   position: relative;
 }
@@ -38,7 +41,7 @@
 
 .apexcharts-tooltip {
   border-radius: 5px;
-  box-shadow: 2px 2px 6px -4px #999;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
   cursor: default;
   font-size: 14px;
   left: 62px;
@@ -51,10 +54,29 @@
   z-index: 12;
   transition: 0.15s ease all;
 }
+.apexcharts-tooltip::after,
+.apexcharts-tooltip::before {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  right: 10px;
+  border: 6px solid transparent;
+}
+.apexcharts-tooltip::after {
+  bottom: -10px;
+  z-index: 1;
+}
 .apexcharts-tooltip.light {
   border: 1px solid #e3e3e3;
   background: rgba(255, 255, 255, 0.96);
 }
+.apexcharts-tooltip.light::before {
+  border-top: 6px solid #e3e3e3;
+}
+.apexcharts-tooltip.light::after {
+  border-top: 4px solid rgba(255, 255, 255, 0.96);
+}
+/* dark tooltip styling missing */
 .apexcharts-tooltip.dark {
   color: #fff;
   background: rgba(30,30,30, 0.8);
@@ -512,9 +534,11 @@
 }
 
 @media screen and (min-width: 768px) {
+  /* 
   .apexcharts-toolbar {
-    /*opacity: 0;*/
-  }
+    opacity: 0;
+  } 
+  */
 
   .apexcharts-canvas:hover .apexcharts-toolbar {
     opacity: 1;
@@ -552,6 +576,10 @@
   pointer-events: none;
 }
 
+/* hide element class with removing it form layout (no space occupied) */
+.apexcharts-heavy-hide {
+  display: none;
+}
 /* markers */
 
 .apexcharts-marker {

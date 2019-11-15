@@ -78,7 +78,11 @@
     if (!element.__resizeTriggers__) {
       if (getComputedStyle(element).position == 'static') element.style.position = 'relative'
 
+      // set initial size values
       element.__resizeLast__ = {}
+      element.__resizeLast__.width = element.offsetWidth
+      element.__resizeLast__.height = element.offsetHeight
+    
       element.__resizeListeners__ = [];
       (element.__resizeTriggers__ = document.createElement('div')).className = 'resize-triggers'
       element.__resizeTriggers__.innerHTML = '<div class="expand-trigger"><div></div></div>' +

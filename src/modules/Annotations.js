@@ -776,7 +776,7 @@ export default class Annotations {
         : opt.pointAnnotation
     )
 
-    const anno = Utils.extend(axesAnno, params)
+    const anno = Utils.mergeDeep(axesAnno, params)
 
     switch (type) {
       case 'xaxis':

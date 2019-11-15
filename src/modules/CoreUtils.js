@@ -1,3 +1,5 @@
+import Utils from '../utils/Utils'
+
 /*
  ** Util functions which are dependent on ApexCharts instance
  */
@@ -348,6 +350,20 @@ class CoreUtils {
     }
 
     return options
+  }
+
+  /*
+   * Normalizes options to expected format:
+   * yaxis - as for input options can be specified as object (single axis) or array (if there are multiple axes). Normalization always returs an array (one element for single axis and mutile element for multiple axes)
+   * @param {*} options - the options object
+   */
+  static normalizeOptions(options) {
+    var opt = Utils.clone(options)
+    if (Utils.isObject(opt.yaxis)) {
+      opt.yaxis = [opt.yaxis]
+    }
+
+    return opt
   }
 }
 
