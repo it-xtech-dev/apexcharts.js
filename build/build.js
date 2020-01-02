@@ -40,7 +40,7 @@ async function build(builds) {
 async function executeBuildEntry(buildConfig) {
   const outputLocation = buildConfig.output
   const { file, banner } = outputLocation
-  const isDev = /apexcharts\.js$/.test(file)
+  const isDev = !/^.+\.min\.(js|css)$/.test(file) //true // /apexcharts\.js$/.test(file)
   const buildBundle = await rollup.rollup(buildConfig)
   const generated = await buildBundle.generate(outputLocation)
   let code = generated.output[0].code

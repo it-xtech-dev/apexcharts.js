@@ -3,3 +3,15 @@ This repo is configured as fork of: https://github.com/apexcharts/apexcharts.js
 Primary apexcharts reporsitory (https://github.com/apexcharts/apexcharts.js) is configured as upstream repo for this project (https://github.com/it-xtech-dev/apexcharts.js)
 
 https://digitaldrummerj.me/git-syncing-fork-with-original-repo/
+
+Development:
+1. Compile in watch mode (open terminal window and write): npm run dev
+2. Open one of the samples from samples folder eg: samples\vanilla-js\area\area-datetime.html
+3. Every time you change the code and save it will quickly recompiled
+4. Refresh browser window to debug new code.
+
+Build:
+1. In Visual Studio Code Terminal: npm run build
+
+Packaging:
+1. In Visual Studio Code Terminal: npm pack

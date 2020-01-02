@@ -663,7 +663,17 @@ export default class Options {
           fontFamily: undefined
         }
       },
-      responsive: [], // breakpoints should follow ascending order 400, then 700, then 1000
+      /*
+      responsive breakpoints format:
+      {
+        minWidth: int,
+        maxWidth: int,
+        minHeight: int,
+        maxHeight: int
+        options: ApexOptions
+      }
+      */
+      responsive: [],
       series: undefined,
       states: {
         normal: {

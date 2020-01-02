@@ -25,6 +25,7 @@ import TitleSubtitle from './modules/TitleSubtitle'
 import Toolbar from './modules/Toolbar'
 import Options from './modules/settings/Options'
 import Promise from 'promise-polyfill'
+import './polyfill/array-polyfill'
 
 import './svgjs/svg.js'
 import 'svg.filter.js'
@@ -35,7 +36,7 @@ import 'svg.resize.js'
 
 import './assets/apexcharts.css'
 import './utils/ClassListPolyfill'
-import './utils/DetectElementResize'
+import './polyfill/ResizeObserver'
 
 import en from './locales/en.json'
 import Spectrum from './charts/Spectrum'
@@ -76,7 +77,6 @@ export default class ApexCharts {
 
     this.create = Utils.bind(this.create, this)
     this.documentEvent = Utils.bind(this.documentEvent, this)
-    this.windowResizeHandler = this.windowResize.bind(this)
   }
 
   /**
@@ -106,11 +106,8 @@ export default class ApexCharts {
         }
 
         this.fireEvent('beforeMount', [this, this.w])
-        window.addEventListener('resize', this.windowResizeHandler)
-        window.addResizeListener(
-          this.el.parentNode,
-          this.parentResizeCallback.bind(this)
-        )
+        // register observer for container resize
+        this.observeResize(this.el)
 
         let graphData = this.create(this.w.config.series, {})
         if (!graphData) return resolve(this)
@@ -807,12 +804,10 @@ export default class ApexCharts {
         }
       })
     }
-    window.removeEventListener('resize', this.windowResizeHandler)
 
-    window.removeResizeListener(
-      this.el.parentNode,
-      this.parentResizeCallback.bind(this)
-    )
+    // release resize observer
+    this.resizeObserver.disconnect()
+    this.resizeObserver = null
   }
 
   /**
@@ -1142,26 +1137,66 @@ export default class ApexCharts {
     return c.chart
   }
 
-  parentResizeCallback() {
-    if (this.w.globals.animationEnded) {
-      this.windowResize()
-    }
-  }
-
   /**
-   * Handle window resize and re-draw the whole chart.
+   * Handlers chart container resize
+   * @param {*} container - the chart container
    */
-  windowResize() {
-    this.el.classList.add('resizing')
-    resizing
-    clearTimeout(this.w.globals.resizeTimer)
-    this.w.globals.resizeTimer = window.setTimeout(() => {
-      this.w.globals.resized = true
-      this.w.globals.dataChanged = false
+  observeResize(container) {
+    // alias this chart instance
+    var chart = this
+    // timer for container resize element buffering
+    var resizeTimer = null
 
-      // we need to redraw the whole chart on window resize (with a small delay).
-      this.update()
-      this.el.classList.remove('resizing')
-    }, 150)
+    // save container initial size to skip triggering event when size doesnt change
+    var prevSize = {
+      height: container.clientHeight,
+      width: container.clientWidth
+    }
+
+    // create new resize observer
+    var observer = new window.ResizeObserver(onContainerResize)
+    observer.observe(container)
+
+    // append observer to chart instance, that will allow to cleanup on chart destroy
+    chart.resizeObserver = observer
+
+    /**
+     * Handles chart container resize event
+     * @param {*} container - the chart container
+     */
+    function onContainerResize(resizeEntry) {
+      // unpack container out out of resize entry
+      var container = resizeEntry[0].target
+
+      // do not continue if size doest change
+      // matters for first event occurence
+      if (!isResized(container)) return
+
+      // add resizing class to container
+      container.classList.add('resizing')
+      // delay resize handling until uset stops resizing (150ms delay)
+      clearTimeout(resizeTimer)
+      resizeTimer = window.setTimeout(() => {
+        // handle resize only when previous size was differen
+        if (!isResized(container)) return
+        prevSize = {
+          width: container.clientWidth,
+          height: container.clientHeight
+        }
+
+        chart.w.globals.resized = true
+        chart.w.globals.dataChanged = false
+
+        chart.update()
+        container.classList.remove('resizing')
+      }, 150)
+    }
+
+    function isResized(container) {
+      return (
+        prevSize.width !== container.clientWidth ||
+        prevSize.height !== container.clientWidth
+      )
+    }
   }
 }

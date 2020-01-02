@@ -13,8 +13,15 @@
     <style>
         #chart {
             padding: 0;            
-            max-width: 380px;
+            max-width: '100%';
+            height: 500px;
             margin: 35px auto;
+        }
+        @media (max-width: 480px) {
+            #chart {
+                max-width: 380px;
+                height: 300px;
+            }
         }
     </style>
 </head>
@@ -29,22 +36,25 @@
     <script>
         var options = {
             chart: {
-                width: 380,
+                width: '100%',
+                height: '100%',
                 type: 'pie',
+                legend: {
+                    position: 'right'
+                }
             },
             labels: ['Team A', 'Team B', 'Team C', 'Team D', 'Team E'],
             series: [44, 55, 13, 43, 22],
-            responsive: [{
-                breakpoint: 480,
-                options: {
-                    chart: {
-                        width: 200
-                    },
+            responsive: [
+                {
+                    maxWidth: 500,
+                    options: {
                     legend: {
-                        position: 'bottom'
+                        position: "bottom"
+                    }
                     }
                 }
-            }]
+            ]
         }
 
         var chart = new ApexCharts(

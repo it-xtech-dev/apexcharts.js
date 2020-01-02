@@ -409,7 +409,8 @@ export default class Core {
       height: newHeight
     })
 
-    gl.dom.Paper.node.parentNode.parentNode.style.minHeight = newHeight + 'px'
+    // PK: skip adding minheight to parent container
+    //gl.dom.Paper.node.parentNode.parentNode.style.minHeight = newHeight + 'px'
   }
 
   /*

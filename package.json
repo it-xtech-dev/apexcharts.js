@@ -1,6 +1,6 @@
 {
   "name": "apexcharts",
-  "version": "3.10.1",
+  "version": "4.10.3",
   "description": "A JavaScript Chart Library",
   "repository": {
     "type": "git",
@@ -29,7 +29,8 @@
     "lint": "eslint src/**/*.js tests/**/*.js --no-fix",
     "test": "jest",
     "unit": "jest tests/unit/",
-    "e2e": "jest tests/e2e/"
+    "e2e": "jest tests/e2e/",
+    "analize": "webpack --profile --json > ./dist/stats.json && webpack-bundle-analyzer ./dist/stats.json"
   },
   "dependencies": {
     "promise-polyfill": "8.1.0",

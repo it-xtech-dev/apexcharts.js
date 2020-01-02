@@ -20,34 +20,49 @@ const banner =
   ' */'
 
 const builds = {
-  'web-cjs': {
-    entry: resolvePath('src/apexcharts.js'),
-    dest: resolvePath('dist/apexcharts.common.js'),
-    format: 'cjs',
-    env: 'production',
-    banner
-  },
+  // 'web-cjs': {
+  //   entry: resolvePath('src/apexcharts.js'),
+  //   dest: resolvePath('dist/apexcharts.common.min.js'),
+  //   format: 'cjs',
+  //   env: 'production',
+  //   banner
+  // },
+  // 'web-cjs-dev': {
+  //   entry: resolvePath('src/apexcharts.js'),
+  //   dest: resolvePath('dist/apexcharts.common.js'),
+  //   format: 'cjs',
+  //   env: 'development',
+  //   banner
+  // },
+
   'web-esm': {
     entry: resolvePath('src/apexcharts.js'),
-    dest: resolvePath('dist/apexcharts.esm.js'),
+    dest: resolvePath('dist/apexcharts.esm.min.js'),
     format: 'es',
     env: 'production',
     banner
   },
-  'web-umd-dev': {
+  'web-esm-dev': {
     entry: resolvePath('src/apexcharts.js'),
-    dest: resolvePath('dist/apexcharts.js'),
-    format: 'umd',
+    dest: resolvePath('dist/apexcharts.esm.js'),
+    format: 'es',
     env: 'development',
     banner
-  },
-  'web-umd-prod': {
-    entry: resolvePath('src/apexcharts.js'),
-    dest: resolvePath('dist/apexcharts.min.js'),
-    format: 'umd',
-    env: 'production',
-    banner
   }
+  // 'web-umd-prod': {
+  //   entry: resolvePath('src/apexcharts.js'),
+  //   dest: resolvePath('dist/apexcharts.min.js'),
+  //   format: 'umd',
+  //   env: 'production',
+  //   banner
+  // },
+  // 'web-umd-dev': {
+  //   entry: resolvePath('src/apexcharts.js'),
+  //   dest: resolvePath('dist/apexcharts.js'),
+  //   format: 'umd',
+  //   env: 'development',
+  //   banner
+  // }
 }
 
 /**

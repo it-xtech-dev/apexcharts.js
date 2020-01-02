@@ -1,7 +1,6 @@
 import Config from './settings/Config'
 import Utils from '../utils/Utils'
 import CoreUtils from './CoreUtils'
-import Core from './Core'
 
 /**
  * ApexCharts Responsive Class to override options for different screen sizes.
@@ -17,6 +16,7 @@ export default class Responsive {
 
   // the opts parameter if not null has to be set overriding everything
   // as the opts is set by user externally
+
   /**
    * Applies options according to responsive settings.
    * @param {*} opts - the options to be applied.
@@ -30,7 +30,7 @@ export default class Responsive {
     const cnf = w.config
 
     // check if responsive config exists
-    if (cnf.responsive.length === 0) return
+    if (!cnf.responsive || cnf.responsive.length === 0) return
 
     // get chart container current size.
     var checkpoint = Utils.getDimensions(this.ctx.el)
@@ -56,7 +56,7 @@ export default class Responsive {
       )
 
     // DEBUG ONLY
-    matchedQueries.map((query) => console.log(query))
+    // matchedQueries.map((query) => console.log(query))
 
     // PK: Dont fully undestand previous implementation options extending "magic" but belive i have simlified it well.
     let config = Utils.clone(w.globals.initialConfig)
@@ -70,42 +70,5 @@ export default class Responsive {
     }
 
     this.w.config = new Config(config).init()
-
-    // const iterateResponsiveOptions = (newOptions = {}) => {
-    //   let largestBreakpoint = res[0].breakpoint
-    //   const width = window.innerWidth > 0 ? window.innerWidth : screen.width
-
-    //   if (width > largestBreakpoint) {
-    //     let options = CoreUtils.extendArrayProps(
-    //       config,
-    //       w.globals.initialConfig
-    //     )
-    //     newOptions = Utils.extend(options, newOptions)
-    //     newOptions = Utils.extend(w.config, newOptions)
-    //     this.overrideResponsiveOptions(newOptions)
-    //   } else {
-    //     for (let i = 0; i < res.length; i++) {
-    //       if (width < res[i].breakpoint) {
-    //         newOptions = CoreUtils.extendArrayProps(config, res[i].options)
-    //         newOptions = Utils.extend(w.config, newOptions)
-    //         this.overrideResponsiveOptions(newOptions)
-    //       }
-    //     }
-    //   }
-    // }
-
-    // if (opts) {
-    //   let options = CoreUtils.extendArrayProps(config, opts)
-    //   options = Utils.extend(w.config, options)
-    //   options = Utils.extend(options, opts)
-    //   iterateResponsiveOptions(options)
-    // } else {
-    //   iterateResponsiveOptions({})
-    // }
   }
-
-  // overrideResponsiveOptions(newOptions) {
-  //   let newConfig = new Config(newOptions).init()
-  //   this.w.config = newConfig
-  // }
 }

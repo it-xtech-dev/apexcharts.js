@@ -131,7 +131,7 @@ export default class Globals {
       isXNumeric: false, // bool: data was provided in a {[x,y], [x,y]} pattern
       isDataXYZ: false, // bool: data was provided in a {[x,y,z]} pattern
       resized: false, // bool: user has resized
-      resizeTimer: null, // timeout function to make a small delay before
+      //resizeTimer: null, // timeout function to make a small delay before
       // drawing when user resized
       comboCharts: false, // bool: whether it's a combination of line/column
       comboChartsHasBars: false, // bool: whether it's a combination of line/column

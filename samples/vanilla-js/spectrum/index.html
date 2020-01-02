@@ -211,7 +211,11 @@
             
             //endDate.setSeconds(endDate.getSeconds() + 60*60*12);
 
-            var series = XT.JSON.parse(localStorage.getItem('spectrumTestSeries')) || [];
+            var series = []
+            if (window.localStorage) {
+                series = XT.JSON.parse(window.localStorage.getItem('spectrumTestSeries')) || [];
+            }
+             
             if (series.length === 0) {
                 data = generateData(['state1','state2','state3'],startDate, endDate, 1, 60*30, 10);
                 // split data into series
@@ -237,7 +241,9 @@
                     });
                 });
 
-                localStorage.setItem('spectrumTestSeries', JSON.stringify(series))
+                if (window.localStorage) {
+                    localStorage.setItem('spectrumTestSeries', JSON.stringify(series))
+                }
             }
 
             
