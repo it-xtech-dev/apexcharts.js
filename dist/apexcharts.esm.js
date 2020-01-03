@@ -1,6 +1,6 @@
 /*!
- * ApexCharts v4.10.3
- * (c) 2018-2019 Juned Chhipa
+ * ApexCharts v4.10.4
+ * (c) 2018-2020 Juned Chhipa
  * Released under the MIT License.
  */
 function _typeof(obj) {
@@ -303,12 +303,16 @@ function () {
               } else if (isObject(val)) {
                 targetValue[index] = {};
               }
-            }
+            } // Removing clone (probably unnecessary)
+            // return this.mergeDeep(this.clone(targetValue[index]), val)
 
-            return _this.mergeDeep(_this.clone(targetValue[index]), val);
+
+            return _this.mergeDeep(targetValue[index], val);
           });
         } else if (isObject(sourceValue)) {
-          target[key] = _this.mergeDeep(_this.clone(targetValue), sourceValue);
+          // Removing clone (probably unnecessary)
+          // target[key] = this.mergeDeep(this.clone(targetValue), sourceValue)
+          target[key] = _this.mergeDeep(targetValue, sourceValue);
         } else {
           // assume this is "non complex" value
           target[key] = sourceValue;

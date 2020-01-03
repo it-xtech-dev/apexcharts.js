@@ -112,10 +112,14 @@ class Utils {
               targetValue[index] = {}
             }
           }
-          return this.mergeDeep(this.clone(targetValue[index]), val)
+          // Removing clone (probably unnecessary)
+          // return this.mergeDeep(this.clone(targetValue[index]), val)
+          return this.mergeDeep(targetValue[index], val)
         })
       } else if (isObject(sourceValue)) {
-        target[key] = this.mergeDeep(this.clone(targetValue), sourceValue)
+        // Removing clone (probably unnecessary)
+        // target[key] = this.mergeDeep(this.clone(targetValue), sourceValue)
+        target[key] = this.mergeDeep(targetValue, sourceValue)
       } else {
         // assume this is "non complex" value
         target[key] = sourceValue

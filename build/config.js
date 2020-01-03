@@ -20,21 +20,20 @@ const banner =
   ' */'
 
 const builds = {
-  // 'web-cjs': {
-  //   entry: resolvePath('src/apexcharts.js'),
-  //   dest: resolvePath('dist/apexcharts.common.min.js'),
-  //   format: 'cjs',
-  //   env: 'production',
-  //   banner
-  // },
-  // 'web-cjs-dev': {
-  //   entry: resolvePath('src/apexcharts.js'),
-  //   dest: resolvePath('dist/apexcharts.common.js'),
-  //   format: 'cjs',
-  //   env: 'development',
-  //   banner
-  // },
-
+  'web-cjs': {
+    entry: resolvePath('src/apexcharts.js'),
+    dest: resolvePath('dist/apexcharts.common.min.js'),
+    format: 'cjs',
+    env: 'production',
+    banner
+  },
+  'web-cjs-dev': {
+    entry: resolvePath('src/apexcharts.js'),
+    dest: resolvePath('dist/apexcharts.common.js'),
+    format: 'cjs',
+    env: 'development',
+    banner
+  },
   'web-esm': {
     entry: resolvePath('src/apexcharts.js'),
     dest: resolvePath('dist/apexcharts.esm.min.js'),
@@ -48,21 +47,21 @@ const builds = {
     format: 'es',
     env: 'development',
     banner
+  },
+  'web-umd-prod': {
+    entry: resolvePath('src/apexcharts.js'),
+    dest: resolvePath('dist/apexcharts.min.js'),
+    format: 'umd',
+    env: 'production',
+    banner
+  },
+  'web-umd-dev': {
+    entry: resolvePath('src/apexcharts.js'),
+    dest: resolvePath('dist/apexcharts.js'),
+    format: 'umd',
+    env: 'development',
+    banner
   }
-  // 'web-umd-prod': {
-  //   entry: resolvePath('src/apexcharts.js'),
-  //   dest: resolvePath('dist/apexcharts.min.js'),
-  //   format: 'umd',
-  //   env: 'production',
-  //   banner
-  // },
-  // 'web-umd-dev': {
-  //   entry: resolvePath('src/apexcharts.js'),
-  //   dest: resolvePath('dist/apexcharts.js'),
-  //   format: 'umd',
-  //   env: 'development',
-  //   banner
-  // }
 }
 
 /**
