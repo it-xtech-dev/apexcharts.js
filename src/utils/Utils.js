@@ -91,6 +91,7 @@ class Utils {
    */
   static mergeDeep(target, source) {
     const isObject = (obj) => obj && typeof obj === 'object'
+    const isDate = (obj) => obj && typeof obj.getTime === 'function'
 
     if (!isObject(target) || !isObject(source)) {
       return source
@@ -116,6 +117,9 @@ class Utils {
           // return this.mergeDeep(this.clone(targetValue[index]), val)
           return this.mergeDeep(targetValue[index], val)
         })
+      } else if (isDate(sourceValue)) {
+        // assing date value
+        target[key] = new Date(sourceValue.getTime())
       } else if (isObject(sourceValue)) {
         // Removing clone (probably unnecessary)
         // target[key] = this.mergeDeep(this.clone(targetValue), sourceValue)

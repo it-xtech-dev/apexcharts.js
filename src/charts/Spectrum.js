@@ -202,7 +202,7 @@ export default class Spectrum {
           })
         }
 
-        // push reminder subblock if it present
+        // push reminder subblock if it is present
         if (blockLastLineWidth > 0) {
           currentLine++
           blocks.push({
@@ -452,7 +452,7 @@ export default class Spectrum {
   }
 
   /**
-   * Initialized spectrum chart axes according to series data
+   * Initializes spectrum chart axes according to series data
    */
   initializeAxes() {
     this.w.config.xaxis.labels.show = false
@@ -463,16 +463,28 @@ export default class Spectrum {
     //this.w.config.yaxis[0].axisTicks.offsetY = -5
 
     var yUnits = []
-    for (var i = 0; i < this.axesConfig.yDivider; i++) {
+    var labelFormat = 'yyyy-MM-dd HH:mm:ss'
+    var minDate = new Date(this.axesConfig.minValue)
+    var maxDate = new Date(this.axesConfig.maxValue)
+    var f = (date, format) => this.dateHelper.formatDate(date, format)
+
+    // determine shortest possible label format
+    if (f(minDate, 'yyyy-MM-dd') === f(maxDate, 'yyyy-MM-dd')) {
+      labelFormat = 'HH:mm:ss'
+    } else if (f(minDate, 'yyyy') === f(maxDate, 'yyyy')) {
+      labelFormat = 'd MM HH:mm:ss'
+    }
+
+    for (var i = 0; i <= this.axesConfig.yDivider; i++) {
       // calculate labels for y axis top -> down
       // calculation is base on absolute ms equation: startValue * step
       var startDate = new Date(
         this.axesConfig.minValue + i * this.axesConfig.xRange
       )
-      var label = this.dateHelper.formatDate(startDate, 'yyyy-MM-dd HH:mm:ss')
+      var label = f(startDate, labelFormat)
       yUnits.push(label)
     }
-    yUnits.push('')
+    //yUnits.push('')
 
     var primaryYAxis = this.w.globals.yAxisScale[0]
     primaryYAxis.result = yUnits
