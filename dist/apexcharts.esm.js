@@ -1,5 +1,5 @@
 /*!
- * ApexCharts v4.10.4
+ * ApexCharts v4.10.5
  * (c) 2018-2020 Juned Chhipa
  * Released under the MIT License.
  */
@@ -284,6 +284,10 @@ function () {
         return obj && _typeof(obj) === 'object';
       };
 
+      var isDate = function isDate(obj) {
+        return obj && typeof obj.getTime === 'function';
+      };
+
       if (!isObject(target) || !isObject(source)) {
         return source;
       }
@@ -309,6 +313,9 @@ function () {
 
             return _this.mergeDeep(targetValue[index], val);
           });
+        } else if (isDate(sourceValue)) {
+          // assing date value
+          target[key] = new Date(sourceValue.getTime());
         } else if (isObject(sourceValue)) {
           // Removing clone (probably unnecessary)
           // target[key] = this.mergeDeep(this.clone(targetValue), sourceValue)
@@ -8528,7 +8535,7 @@ function () {
               xEnd: lineEndXPosition,
               line: currentLine
             });
-          } // push reminder subblock if it present
+          } // push reminder subblock if it is present
 
 
           if (blockLastLineWidth > 0) {
@@ -8729,12 +8736,14 @@ function () {
       };
     }
     /**
-     * Initialized spectrum chart axes according to series data
+     * Initializes spectrum chart axes according to series data
      */
 
   }, {
     key: "initializeAxes",
     value: function initializeAxes() {
+      var _this3 = this;
+
       this.w.config.xaxis.labels.show = false;
       this.w.config.xaxis.axisTicks.show = false;
       this.w.config.yaxis[0].reversed = true;
@@ -8742,16 +8751,30 @@ function () {
       this.w.config.yaxis[0].axisTicks.show = true; //this.w.config.yaxis[0].axisTicks.offsetY = -5
 
       var yUnits = [];
+      var labelFormat = 'yyyy-MM-dd HH:mm:ss';
+      var minDate = new Date(this.axesConfig.minValue);
+      var maxDate = new Date(this.axesConfig.maxValue);
 
-      for (var i = 0; i < this.axesConfig.yDivider; i++) {
+      var f = function f(date, format) {
+        return _this3.dateHelper.formatDate(date, format);
+      }; // determine shortest possible label format
+
+
+      if (f(minDate, 'yyyy-MM-dd') === f(maxDate, 'yyyy-MM-dd')) {
+        labelFormat = 'HH:mm:ss';
+      } else if (f(minDate, 'yyyy') === f(maxDate, 'yyyy')) {
+        labelFormat = 'd MM HH:mm:ss';
+      }
+
+      for (var i = 0; i <= this.axesConfig.yDivider; i++) {
         // calculate labels for y axis top -> down
         // calculation is base on absolute ms equation: startValue * step
         var startDate = new Date(this.axesConfig.minValue + i * this.axesConfig.xRange);
-        var label = this.dateHelper.formatDate(startDate, 'yyyy-MM-dd HH:mm:ss');
+        var label = f(startDate, labelFormat);
         yUnits.push(label);
-      }
+      } //yUnits.push('')
 
-      yUnits.push('');
+
       var primaryYAxis = this.w.globals.yAxisScale[0];
       primaryYAxis.result = yUnits; //get the longest string from the labels array and also apply label formatter to it
 

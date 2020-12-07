@@ -43,9 +43,11 @@ export default class Spectrum {
     var chartContainer = document.querySelector(w.globals.chartClass)
 
     // get canvas offset relative to chart container
-    var canvasRelativePosition = {
-      left: w.globals.translateX,
-      top: w.globals.translateY
+    var canvasDimensions = {
+      left: w.globals.translateX - 2,
+      top: w.globals.translateY - 3,
+      width: w.globals.gridWidth + 2,
+      height: w.globals.gridHeight + 4
     }
 
     // add the canvas and set its dimensions according to chart draw area.
@@ -53,18 +55,18 @@ export default class Spectrum {
     canvas.setAttribute(
       'style',
       'top:' +
-        canvasRelativePosition.top +
+        canvasDimensions.top +
         'px;left:' +
-        canvasRelativePosition.left +
+        canvasDimensions.left +
         'px;width:' +
-        w.globals.gridWidth +
+        canvasDimensions.width +
         'px;height:' +
-        w.globals.gridHeight +
+        canvasDimensions.height +
         'px;'
     )
     // set canvas dimensions
-    canvas.width = w.globals.gridWidth
-    canvas.height = w.globals.gridHeight
+    canvas.width = canvasDimensions.width
+    canvas.height = canvasDimensions.height
 
     // handle tooltips over the canvas
     // custom tooltip class is used here
@@ -356,7 +358,7 @@ export default class Spectrum {
       this.tooltipBlockContext = hoveredBlock
 
       //console.log('Tooltip position changed')
-      //console.log(this.tooltipBlockContext.x, this.tooltipBlockContext.y)
+      // console.log(this.tooltipBlockContext.x, this.tooltipBlockContext.y)
 
       if (!this.tooltipBlockContext) {
         // when changed to empty (not matched) block hide tooltip.
@@ -460,7 +462,7 @@ export default class Spectrum {
     this.w.config.yaxis[0].reversed = true
     this.w.config.yaxis[0].axisBorder.show = true
     this.w.config.yaxis[0].axisTicks.show = true
-    //this.w.config.yaxis[0].axisTicks.offsetY = -5
+    this.w.config.yaxis[0].axisTicks.offsetY = -4
 
     var yUnits = []
     var labelFormat = 'yyyy-MM-dd HH:mm:ss'
@@ -510,8 +512,8 @@ class DataPointToolTip {
     this._isVisible = false
     this.isAutoShowEnabled = true
     this._content = ''
-    this._top = 0
-    this._left = 0
+    this._top = null
+    this._left = null
     this._topOffset = globals.translateY
     this._leftOffset = globals.translateX
     this.toolTipElement.setAttribute(
@@ -575,7 +577,14 @@ class DataPointToolTip {
       if (this.isAutoShowEnabled === true) this.isVisible = true
       this._left = val
       // horizontal offset to show tooltip before target position taking into account tooltip width
-      var contentOffset = this.toolTipElement.clientWidth - 18
+      const tooltipWidth = this.toolTipElement.clientWidth
+      var contentOffset = 0
+      if (this._left > tooltipWidth) {
+        this.removeClass('tooltip-left')
+        var contentOffset = tooltipWidth
+      } else {
+        this.addClass('tooltip-left')
+      }
       this.toolTipElement.style.left =
         this._leftOffset + val - contentOffset + 'px'
     }
@@ -591,6 +600,14 @@ class DataPointToolTip {
       this._content = html
       this.toolTipElement.innerHTML = html
     }
+  }
+
+  addClass(className) {
+    this.toolTipElement.classList.add(className)
+  }
+
+  removeClass(className) {
+    this.toolTipElement.classList.remove(className)
   }
 
   /**
