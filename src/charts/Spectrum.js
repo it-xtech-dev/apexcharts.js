@@ -132,12 +132,16 @@ export default class Spectrum {
 
       var lastDrawnBlock = this.drawnBlocks.slice(-1)[0]
       if (lastDrawnBlock && lastDrawnBlock.dataPoint.end > dataPoint.start) {
-        console.error(
-          'Datapoint Collision:',
-          lastDrawnBlock.dataPoint,
-          dataPoint
-        )
-        throw 'Unable to draw dataPoint block because it is colliding with previous block:'
+        const message = `Datapoint Collision: Unable to draw dataPoint block (start: ${this.dateHelper.formatDate(
+          dataPoint.start,
+          'yyyy-MM-dd HH:mm:ss'
+        )})
+        because it is colliding with previous block (end: ${this.dateHelper.formatDate(
+          lastDrawnBlock.dataPoint.end,
+          'yyyy-MM-dd HH:mm:ss'
+        )})`
+        console.error(message)
+        throw message
       }
 
       //console.log('dataPoint.start', dataPoint.start.getTime())
@@ -474,7 +478,7 @@ export default class Spectrum {
     if (f(minDate, 'yyyy-MM-dd') === f(maxDate, 'yyyy-MM-dd')) {
       labelFormat = 'HH:mm:ss'
     } else if (f(minDate, 'yyyy') === f(maxDate, 'yyyy')) {
-      labelFormat = 'd MM HH:mm:ss'
+      labelFormat = 'd MMM HH:mm:ss'
     }
 
     for (var i = 0; i <= this.axesConfig.yDivider; i++) {
